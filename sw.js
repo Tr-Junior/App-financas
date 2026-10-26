@@ -1,7 +1,7 @@
 self.addEventListener('install', (e) => {
     e.waitUntil(
-        caches.open('sunna-cache-v1').then((cache) => {
-            return cache.addAll(['index.html', 'app.js', 'manifest.json']);
+        caches.open('valora-cache-v1').then((cache) => {
+            return cache.addAll(['./index.html', './app.js', './manifest.json', './icon-192.png']);
         })
     );
 });

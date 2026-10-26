@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sunna • Finanças</title>
+    <title>Valora • Finanças</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#172554">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" href="icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -21,7 +22,7 @@
     <header class="bg-blue-950 text-white pt-6 pb-8 px-5 rounded-b-3xl shadow-lg">
         <div class="flex justify-between items-center mb-4">
             <div>
-                <span class="text-xs font-semibold uppercase tracking-wider text-blue-300">SUNNA • FINANÇAS</span>
+                <span class="text-xs font-semibold uppercase tracking-wider text-blue-300">VALORA • FINANÇAS</span>
                 <h1 class="text-2xl font-bold tracking-tight">Visão Geral</h1>
             </div>
             <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-md transition active:scale-95">+</button>
@@ -67,9 +68,7 @@
         </div>
 
         <!-- Lista de Transações -->
-        <div id="listaTransacoes" class="space-y-2.5">
-            <!-- Preenchido via JavaScript -->
-        </div>
+        <div id="listaTransacoes" class="space-y-2.5"></div>
     </main>
 
     <!-- Modal de Adicionar / Editar -->
@@ -110,11 +109,13 @@
         </div>
     </div>
 
-    <!-- Script de Funcionalidades e PWA -->
+    <!-- Script Principal e Service Worker -->
     <script src="app.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err));
+            });
         }
     </script>
 </body>

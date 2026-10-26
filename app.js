@@ -1,4 +1,4 @@
-let dados = JSON.parse(localStorage.getItem('sunna_data')) || {
+let dados = JSON.parse(localStorage.getItem('valora_data')) || {
     abaAtiva: 'despesas',
     itens: [
         { id: 1, tipo: 'receita', nome: 'Salário Tarcísio', valor: 2500.00, status: 'pago' },
@@ -21,7 +21,7 @@ let dados = JSON.parse(localStorage.getItem('sunna_data')) || {
 };
 
 function salvarStorage() {
-    localStorage.setItem('sunna_data', JSON.stringify(dados));
+    localStorage.setItem('valora_data', JSON.stringify(dados));
     atualizarUI();
 }
 
@@ -30,15 +30,11 @@ function formatarMoeda(val) {
 }
 
 function atualizarUI() {
-    let totalRec = 0;
-    let totalGas = 0;
-    let gasPago = 0;
-    let gasPendente = 0;
+    let totalRec = 0, totalGas = 0, gasPago = 0, gasPendente = 0;
 
     dados.itens.forEach(item => {
-        if (item.tipo === 'receita') {
-            totalRec += item.valor;
-        } else {
+        if (item.tipo === 'receita') totalRec += item.valor;
+        else {
             totalGas += item.valor;
             if (item.status === 'pago') gasPago += item.valor;
             else gasPendente += item.valor;
@@ -141,9 +137,6 @@ function removerItem(id) {
 }
 
 function openAddModal() {
-    document.getElementById('transId').value = '';
-    document.getElementById('descricao').value = '';
-    document.getElementById('valor').value = '';
     document.getElementById('modal').classList.remove('hidden');
     document.getElementById('modal').classList.add('flex');
 }
