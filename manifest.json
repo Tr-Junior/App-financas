@@ -1,0 +1,15 @@
+{
+  "name": "Sunna • Finanças",
+  "short_name": "Sunna",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#172554",
+  "theme_color": "#172554",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
