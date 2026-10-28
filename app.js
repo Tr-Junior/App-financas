@@ -1,4 +1,26 @@
-let dados = JSON.parse(localStorage.getItem('valora_data')) || {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// SUAS CHAVES DO FIREBASE CONSOLE
+const firebaseConfig = {
+   apiKey: "AIzaSyB6Nnu6x0vF13CgBgiFMBoHogTessmtbEk",
+  authDomain: "minhas-despesas-5d61f.firebaseapp.com",
+  projectId: "minhas-despesas-5d61f",
+  storageBucket: "minhas-despesas-5d61f.firebasestorage.app",
+  messagingSenderId: "943467909687",
+  appId: "1:943467909687:web:901cf0997ba5ed636a65b2",
+  measurementId: "G-TL6JB2FMDT"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ID fixo da sala para você e sua esposa compartilharem o mesmo banco
+const SALA_ID = "orcamento-familia-sunna";
+
+let dados = {
     abaAtiva: 'despesas',
     itens: [
         { id: 1, tipo: 'receita', nome: 'Salário Tarcísio', valor: 2500.00, status: 'pago' },
@@ -20,9 +42,28 @@ let dados = JSON.parse(localStorage.getItem('valora_data')) || {
     ]
 };
 
-function salvarStorage() {
-    localStorage.setItem('valora_data', JSON.stringify(dados));
-    atualizarUI();
+// Autentica de forma 100% invisível sem pedir login
+signInAnonymously(auth).then(() => {
+    const docRef = doc(db, "orcamentos_compartilhados", SALA_ID);
+    
+    // Escuta alterações em tempo real do banco de dados no Firebase
+    onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+            dados = docSnap.data();
+            atualizarUI();
+        } else {
+            // Se for o primeiro acesso, cria o banco com os dados iniciais
+            salvarNoFirebase();
+        }
+    });
+}).catch(err => console.error("Erro na autenticação anônima:", err));
+
+async function salvarNoFirebase() {
+    try {
+        await setDoc(doc(db, "orcamentos_compartilhados", SALA_ID), dados);
+    } catch (e) {
+        console.error("Erro ao salvar no Firebase:", e);
+    }
 }
 
 function formatarMoeda(val) {
@@ -69,7 +110,7 @@ function atualizarUI() {
     renderizarLista();
 }
 
-function switchTab(aba) {
+window.switchTab = function(aba) {
     dados.abaAtiva = aba;
     const btnD = document.getElementById('btnTabDespesas');
     const btnR = document.getElementById('btnTabReceitas');
@@ -81,7 +122,7 @@ function switchTab(aba) {
         btnD.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 transition";
     }
     renderizarLista();
-}
+};
 
 function renderizarLista() {
     const lista = document.getElementById('listaTransacoes');
@@ -121,32 +162,32 @@ function renderizarLista() {
     });
 }
 
-function alternarStatus(id) {
+window.alternarStatus = function(id) {
     const item = dados.itens.find(i => i.id === id);
     if (item) {
         item.status = item.status === 'pago' ? 'pendente' : 'pago';
-        salvarStorage();
+        salvarNoFirebase();
     }
-}
+};
 
-function removerItem(id) {
+window.removerItem = function(id) {
     if (confirm('Deseja excluir este item?')) {
         dados.itens = dados.itens.filter(i => i.id !== id);
-        salvarStorage();
+        salvarNoFirebase();
     }
-}
+};
 
-function openAddModal() {
+window.openAddModal = function() {
     document.getElementById('modal').classList.remove('hidden');
     document.getElementById('modal').classList.add('flex');
-}
+};
 
-function closeModal() {
+window.closeModal = function() {
     document.getElementById('modal').classList.remove('flex');
     document.getElementById('modal').classList.add('hidden');
-}
+};
 
-function salvarTransacao(e) {
+window.salvarTransacao = function(e) {
     e.preventDefault();
     const novoItem = {
         id: Date.now(),
@@ -156,8 +197,6 @@ function salvarTransacao(e) {
         status: document.getElementById('status').value
     };
     dados.itens.push(novoItem);
-    salvarStorage();
+    salvarNoFirebase();
     closeModal();
-}
-
-atualizarUI();
+};

@@ -31,8 +31,8 @@
         <!-- Card de Saldo Principal -->
         <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-4 shadow-inner">
             <p class="text-xs text-blue-200 uppercase font-medium">Saldo do Mês</p>
-            <h2 id="saldoTotal" class="text-3xl font-extrabold mt-1 tracking-tight text-white">- R$ 1.498,65</h2>
-            <p id="saldoStatus" class="text-xs mt-1 text-red-300 font-medium">As despesas superam as receitas</p>
+            <h2 id="saldoTotal" class="text-3xl font-extrabold mt-1 tracking-tight text-white">Carregando...</h2>
+            <p id="saldoStatus" class="text-xs mt-1 text-blue-200 font-medium">Sincronizando com o banco...</p>
         </div>
     </header>
 
@@ -41,27 +41,27 @@
         <div class="grid grid-cols-2 gap-3">
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
                 <span class="text-xs font-semibold text-slate-400 uppercase">Receitas</span>
-                <p id="totalReceitas" class="text-lg font-bold text-emerald-600 mt-1">R$ 5.480,00</p>
+                <p id="totalReceitas" class="text-lg font-bold text-emerald-600 mt-1">R$ 0,00</p>
             </div>
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
                 <span class="text-xs font-semibold text-slate-400 uppercase">Gastos</span>
-                <p id="totalGastos" class="text-lg font-bold text-slate-900 mt-1">R$ 6.978,65</p>
+                <p id="totalGastos" class="text-lg font-bold text-slate-900 mt-1">R$ 0,00</p>
             </div>
         </div>
 
         <!-- Barra de Progresso Pago x A Pagar -->
         <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-2">
             <div class="flex justify-between text-xs font-semibold">
-                <span class="text-emerald-600">Pago: <span id="valPago">R$ 366,00</span></span>
-                <span class="text-rose-600">A Pagar: <span id="valPendente">R$ 6.612,65</span></span>
+                <span class="text-emerald-600">Pago: <span id="valPago">R$ 0,00</span></span>
+                <span class="text-rose-600">A Pagar: <span id="valPendente">R$ 0,00</span></span>
             </div>
             <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden flex">
-                <div id="barraPago" class="bg-emerald-500 h-full transition-all duration-500" style="width: 5%;"></div>
-                <div id="barraPendente" class="bg-rose-500 h-full transition-all duration-500" style="width: 95%;"></div>
+                <div id="barraPago" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%;"></div>
+                <div id="barraPendente" class="bg-rose-500 h-full transition-all duration-500" style="width: 0%;"></div>
             </div>
         </div>
 
-        <!-- Abas de Navegação (Receitas vs Despesas) -->
+        <!-- Abas de Navegação -->
         <div class="flex bg-slate-200 p-1 rounded-xl">
             <button onclick="switchTab('despesas')" id="btnTabDespesas" class="flex-1 py-2 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm transition">Despesas</button>
             <button onclick="switchTab('receitas')" id="btnTabReceitas" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-500 transition">Receitas</button>
@@ -73,13 +73,12 @@
 
     <!-- Modal de Adicionar / Editar -->
     <div id="modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-end z-50 transition-opacity">
-        <div class="bg-white w-full rounded-t-3xl p-6 space-y-4 animate-in slide-in-from-bottom duration-300">
+        <div class="bg-white w-full rounded-t-3xl p-6 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-lg text-slate-900" id="modalTitle">Novo Lançamento</h3>
+                <h3 class="font-bold text-lg text-slate-900">Novo Lançamento</h3>
                 <button onclick="closeModal()" class="text-slate-400 text-xl font-bold">&times;</button>
             </div>
             <form id="formTransacao" onsubmit="salvarTransacao(event)" class="space-y-3">
-                <input type="hidden" id="transId">
                 <div>
                     <label class="text-xs font-semibold text-slate-500">Tipo</label>
                     <select id="tipo" class="w-full mt-1 p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
@@ -109,12 +108,12 @@
         </div>
     </div>
 
-    <!-- Script Principal e Service Worker -->
-    <script src="app.js"></script>
+    <!-- Script do Firebase -->
+    <script type="module" src="app.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err));
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW failed: ', err));
             });
         }
     </script>
